@@ -1,7 +1,12 @@
+import Header from "../../components/Header"
+import Home from "./homePage/Home"
 
 const UserLayout = () => {
     return (
-        <div>UserLayout</div>
+        <div>
+            <Header />
+            <Home />
+        </div>
     )
 }
 

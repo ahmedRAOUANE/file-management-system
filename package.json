@@ -1,17 +1,22 @@
 {
   "name": "react-filebase-file-management-system",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
+  "homepage": "https://ahmedRAOUANE.github.io/file-management-system/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "eject": "react-scripts eject"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.3",
     "firebase": "^10.11.1",
+    "gh-pages": "^6.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.1.2",
