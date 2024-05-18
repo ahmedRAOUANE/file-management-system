@@ -1,0 +1,43 @@
+.container {
+
+    .grow {
+        flex-grow: 1;
+    }
+
+    .shrink {
+        flex-grow: 0;
+    }
+
+    .header {
+        .navURL {
+            transition: .5s;
+            padding: var(--button-padding);
+            background-color: #121212;
+            color: white;
+            gap: 2px;
+            border-radius: 7px;
+            overflow: hidden;
+            width: 300px;
+
+            .pathContainer {
+                gap: 2px;
+
+                span {
+                    &:hover {
+                        background-color: transparent;
+                        color: blue;
+                    }
+                }
+            }
+
+            input {
+                padding: 0px;
+                font-size: 19px;
+                letter-spacing: 2px;
+                font-weight: 100;
+            }
+        }
+    }
+
+    .folderContainer {}
+}

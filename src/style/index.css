@@ -26,7 +26,8 @@
   --light-shadow: 0 1px 10px 2px #00000040;
   --heavy-shadow: 0 1px 8px 3px #00000078;
 
-  transition: .8s all;
+  /* transition */
+    transition: .8s linear all;
 
   /* spacing */
   letter-spacing: 2px;
@@ -41,6 +42,7 @@
   margin: 0;
   box-sizing: border-box;
 }
+
 a {
   text-decoration: none;
   color: inherit;
@@ -59,12 +61,14 @@ input {
   flex: 1;
   font-size: 20px;
   max-width: 100%;
+  width: 100%;
 }
 
 ul,
 li {
   list-style: none;
 }
+
 header {
   padding: calc(var(--main-padding) / 2) var(--main-padding);
 }
