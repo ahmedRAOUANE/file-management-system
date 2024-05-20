@@ -1,30 +1,47 @@
 import { v4 } from "uuid";
 import { useRef } from "react"
-import { useSelector } from "react-redux";
-// import { useGenerateFields } from "../../utils/useHandleFields"
+import { useDispatch, useSelector } from "react-redux";
+import { useGenerateFields, useGetField, useUpdateField } from "../../utils/useHandleFields";
+import { setIsOpen, setwindow } from "../../store/windowSlice";
+import { setContent } from "../../store/contentSlice";
 
 const CreateFolder = () => {
     const user = useSelector(state => state.userSlice.user);
     const path = useSelector(state => state.pathSlice.path);
 
+    const dispatch = useDispatch();
+
     const folderNameRef = useRef();
-    // const generateField = useGenerateFields();
+
+    const generateField = useGenerateFields();
+    const updateField = useUpdateField();
+    const getfield = useGetField();
+
+    const currentParentIndex = path.length - 1;
 
     const handleSubmit = async (e) => {
         e.preventDefault()
 
         const field = {
             collName: "folders",
-            fieldName: path[path.length - 1].name,
-            fieldID: path[path.length - 1].id,
+            fieldName: path[currentParentIndex].name,
+            fieldID: path[currentParentIndex].fieldID,
             content: {
-                namme: folderNameRef.current.value,
+                name: folderNameRef.current.value,
                 type: "folder",
                 folderID: `${user.uid}_${v4()}`
             }
         }
 
-        console.log("fieldL: ", field);
+        // 1 - target the parent to update its children property
+        await updateField(user, field);
+        // 2 - create the feild
+        await generateField(user, field);
+
+        dispatch(setIsOpen(false));
+        dispatch(setwindow(""));
+
+        await getfield(user, field, setContent)
     }
 
     return (

@@ -45,12 +45,12 @@ function App() {
 
           await generateRoot(user);
 
-          const field = {
+          const folders = {
             collName: "folders",
             fieldName: "root",
           };
 
-          await generateField(user, field);
+          await generateField(user, folders);
         } catch (err) {
           dispatch(setError(err.message));
         } finally {
