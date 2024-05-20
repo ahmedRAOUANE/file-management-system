@@ -1,14 +1,14 @@
 import { v4 } from "uuid";
 import { useRef } from "react"
 import { useSelector } from "react-redux";
-import { useGenerateFields } from "../utils/useHandleFields"
+// import { useGenerateFields } from "../../utils/useHandleFields"
 
 const CreateFolder = () => {
     const user = useSelector(state => state.userSlice.user);
     const path = useSelector(state => state.pathSlice.path);
 
     const folderNameRef = useRef();
-    const generateField = useGenerateFields();
+    // const generateField = useGenerateFields();
 
     const handleSubmit = async (e) => {
         e.preventDefault()

@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom'
-import { auth } from '../../firebase';
+import { auth } from '../../../firebase';
 import { signOut } from 'firebase/auth';
-import { setUser } from '../store/userSlice';
-import { setPath } from '../store/pathSlice';
-import { setError } from '../store/errorSlice';
-import { setContent } from '../store/contentSlice';
-import { setIsLoading } from '../store/loaderSlice';
+import { setUser } from '../../store/userSlice';
+import { setPath } from '../../store/pathSlice';
+import { setError } from '../../store/errorSlice';
+import { setContent } from '../../store/contentSlice';
+import { setIsLoading } from '../../store/loaderSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { setIsOpen, setwindow } from '../store/windowSlice';
+import { setIsOpen, setwindow } from '../../store/windowSlice';
 
 const UserNavList = () => {
     const user = useSelector(state => state.userSlice.user)

@@ -13,8 +13,8 @@ import './style/button.css';
 // components
 import Loading from './pages/Loading';
 import NotFound from './pages/NotFound';
-import Window from './components/Window';
 import Home from './pages/user/homePage/Home';
+import Window from './components/window/Window';
 import UserLayout from './pages/user/UserLayout';
 import LandingPage from './pages/landing/LandingPage';
 

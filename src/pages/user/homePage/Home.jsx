@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import Icon from "../../../components/Icon";
 import { setPath } from "../../../store/pathSlice";
 import { useEffect, useMemo, useState } from "react";
@@ -9,6 +8,7 @@ import { setIsOpen, setwindow } from "../../../store/windowSlice";
 
 // style
 import style from "../../../style/home.module.css";
+import HeaderActions from "../../../components/window/HeaderActions";
 
 const Home = () => {
     const user = useSelector(state => state.userSlice.user);
@@ -16,7 +16,6 @@ const Home = () => {
     const path = useSelector(state => state.pathSlice.path);
 
     const [lastVisited, setLastVisited] = useState("");
-    // const [currentFolderIndex, setCurrentFolderIndex] = useState(path.length - 1);
     const currentFolderIndex = path.length - 1;
 
     const dispatch = useDispatch();
@@ -24,6 +23,13 @@ const Home = () => {
     const getfield = useGetField();
 
     const folders = content.children ? content.children : [];
+
+    // ---- for the sidebar feature ---- //
+    // const foldersList = folders.length !== 0 ? [{ name: "root", id: "0" }, ...folders] : [];
+    // const sidebarListRef = useRef([]);
+    // if (foldersList.length !== 0) {
+    //     sidebarListRef.current = foldersList;
+    // }
 
     const field = useMemo(() => {
         if (path[currentFolderIndex]) {
@@ -68,15 +74,7 @@ const Home = () => {
         }
     }, [user, getfield, field])
 
-    const changContent = async (file) => {
-        const newField = {
-            collName: "folders",
-            fieldName: file.name,
-            fieldID: file.fieldID,
-        }
-
-        // setCurrentFolderIndex(prev => prev + 1);
-        await getfield(user, newField, setContent);
+    const openFolder = (file) => {
         dispatch(setPath([...path, file]));
         setLastVisited(file);
     }
@@ -84,6 +82,9 @@ const Home = () => {
     const handleNavigate = (fileIndex) => {
         if (path.length === 0) return;
         dispatch(setPath(path.slice(0, fileIndex + 1)));
+
+        // second case
+        // search folders && update path
     }
 
     const backward = async () => {
@@ -99,6 +100,11 @@ const Home = () => {
             dispatch(setPath([...path, lastVisited]));
         }
     }
+
+    // ---- for the sidebar feature --- //
+    // const openFolderFromSidebar = (file) => {
+    //     dispatch(setPath([{ name: "root", id: "0" }, file]));
+    // }
 
     return (
         <div className={`${style.container} full-p column box`}>
@@ -116,31 +122,26 @@ const Home = () => {
                     <input type="text" onFocus={changePlaceholder} onBlur={restorePlaceholder} />
                 </div>
 
-                <div className={`actions box hide-in-small`}>
-                    <button onClick={() => openWindow("createFolder")}>create folder</button>
-                    <button onClick={() => openWindow("createFile")}>create file</button>
-                </div>
+                <HeaderActions className={`${style.actions} box hide-in-small`} />
 
-                <button className="hide-in-large icon" onClick={() => openWindow("nav_list")}>
+                <button className="hide-in-large icon" onClick={() => openWindow("navList")}>
                     <Icon name={"plus"} />
                 </button>
             </div>
 
             <div className={`${style.flderContainer} box full-width ai-start`}>
-                <div className="navbar hide-in-small" style={{ width: "20%" }}>
+                {/* <div className="navbar hide-in-small" style={{ width: "20%" }}>
                     <ul className="box column full-width">
-                        {["home", "videos", "picturs", "music", "others"].map((ele, idx) => (
-                            <li className="btn full-width" key={idx}>
-                                <Link>
-                                    {ele}
-                                </Link>
+                        {sidebarListRef.current.map((ele, idx) => (
+                            <li onClick={() => openFolderFromSidebar(ele)} className="btn full-width" key={idx}>
+                                {ele.name}
                             </li>
                         ))}
                     </ul>
-                </div>
+                </div> */}
                 <main className="box jc-start full-width">
                     {folders.length > 0 ? folders.map((file, idx) => (
-                        <div onClick={() => changContent(file)} key={idx} style={{ width: "80px", height: "130px" }} className="icon btn column box">
+                        <div onClick={() => openFolder(file)} key={idx} style={{ width: "80px", height: "130px" }} className="icon btn column box">
                             {file.type === "folder" ? <Icon name={"folder"} /> : <Icon name={"file"} />}
                             <span style={{ width: "100%", overflow: "hidden", flex: "1", padding: "0 10px" }}>{file.name}</span>
                         </div>

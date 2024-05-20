@@ -1,10 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
+import { setIsOpen, setwindow } from "../../store/windowSlice";
 
-import style from "../style/window.module.css"
-import { setIsOpen, setwindow } from "../store/windowSlice";
+import style from "../../style/window.module.css";
+
+// components
+import CreateFile from "./CreateFile";
 import UserNavList from "./UserNavList";
 import CreateFolder from "./CreateFolder";
-import CreateFile from "./CreateFile";
+import HeaderActions from "./HeaderActions";
 
 const Window = () => {
     const isOpen = useSelector(state => state.windowSlice.isOpen);
@@ -30,6 +33,9 @@ const Window = () => {
                 )}
                 {window === "createFile" && (
                     <CreateFile />
+                )}
+                {window === "navList" && (
+                    <HeaderActions className={"box column full-width"} />
                 )}
             </div>
         </div>
