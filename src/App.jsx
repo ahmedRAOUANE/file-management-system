@@ -3,7 +3,7 @@ import { auth } from '../firebase';
 import { Route, Routes } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useDispatch, useSelector } from 'react-redux';
-import { useGenerateFields, useGenerateRoot } from './utils/useHandleFields';
+import { useGenerateFields, useGenerateRoot, useGetField } from './utils/useHandleFields';
 
 // style
 import './style/index.css';
@@ -22,14 +22,16 @@ import LandingPage from './pages/landing/LandingPage';
 import { setUser } from "./store/userSlice";
 import { setError } from "./store/errorSlice";
 import { setIsLoading } from "./store/loaderSlice";
+import { setContent } from './store/contentSlice';
 
 function App() {
   const user = useSelector(state => state.userSlice.user);
 
   const dispatch = useDispatch();
 
-  const generateRoot = useGenerateRoot();
   const generateField = useGenerateFields();
+  const generateRoot = useGenerateRoot();
+  const getFields = useGetField();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
@@ -48,9 +50,12 @@ function App() {
           const folders = {
             collName: "folders",
             fieldName: "root",
+            fieldID: "0"
           };
 
           await generateField(user, folders);
+
+          await getFields(user, folders, setContent)
         } catch (err) {
           dispatch(setError(err.message));
         } finally {
