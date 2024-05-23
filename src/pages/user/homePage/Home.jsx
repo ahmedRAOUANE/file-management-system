@@ -22,7 +22,7 @@ const Home = () => {
 
     const getfield = useGetField();
 
-    const folders = content.children ? content.children : [];
+    const folders = content.content ? content.content : [];
 
     // ---- for the sidebar feature ---- //
     // const foldersList = folders.length !== 0 ? [{ name: "root", id: "0" }, ...folders] : [];
@@ -37,6 +37,7 @@ const Home = () => {
                 collName: "folders",
                 fieldName: path[currentFolderIndex].name,
                 fieldID: path[currentFolderIndex].fieldID,
+                path: path.map(ele => ele.name)
             }
         }
         return null;
@@ -75,8 +76,13 @@ const Home = () => {
     }, [user, getfield, field])
 
     const openFolder = (file) => {
-        dispatch(setPath([...path, file]));
-        setLastVisited(file);
+        if (file.type === "folder") {
+            dispatch(setPath([...path, file]));
+            setLastVisited(file);
+        }
+        else if (file.type === "file") {
+            window.open(file.url, "_blank");
+        }
     }
 
     const handleNavigate = (fileIndex) => {

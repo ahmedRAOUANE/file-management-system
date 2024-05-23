@@ -29,7 +29,7 @@ const CreateFolder = () => {
             content: {
                 name: folderNameRef.current.value,
                 type: "folder",
-                folderID: `${user.uid}_${v4()}`
+                fieldID: `${user.uid}_${v4()}`
             }
         }
 

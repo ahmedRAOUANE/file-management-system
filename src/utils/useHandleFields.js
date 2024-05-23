@@ -1,7 +1,6 @@
 import { v4 } from "uuid";
 import { useCallback } from "react";
 import { db } from "../../firebase";
-import { setContent } from "../store/contentSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { setError } from "../store/errorSlice";
@@ -13,23 +12,17 @@ export const useGenerateRoot = () => {
     const generateRoot = useCallback(async (user) => {
         try {
             const root = {
-                collName: "folders",
-                fieldName: "root",
-                fieldID: 0,
-                content: {
-                    fieldID: 0,
-                    name: "root",
-                    properties: {
-                        createdAt: Date.now(),
-                    },
-                    parent: "",
-                    children: [
-                        { name: "music", type: "folder", fieldID: `${user.uid}_${v4()}` },
-                        { name: "videos", type: "folder", fieldID: `${user.uid}_${v4()}` },
-                        { name: "picturs", type: "folder", fieldID: `${user.uid}_${v4()}` },
-                        { name: "others", type: "folder", fieldID: `${user.uid}_${v4()}` },
-                    ]
-                }
+                fieldID: "0",
+                name: "root",
+                properties: {
+                    createdAt: Date.now(),
+                },
+                content: [
+                    { name: "music", type: "folder", fieldID: `${user.uid}_${v4()}` },
+                    { name: "videos", type: "folder", fieldID: `${user.uid}_${v4()}` },
+                    { name: "picturs", type: "folder", fieldID: `${user.uid}_${v4()}` },
+                    { name: "others", type: "folder", fieldID: `${user.uid}_${v4()}` },
+                ]
             }
             // get doc
             const userDocRef = doc(db, "folders", user.uid);
@@ -37,17 +30,8 @@ export const useGenerateRoot = () => {
 
             if (!userDoc.exists()) {
                 await setDoc(userDocRef, {
-                    root: root.content
+                    [root.fieldID]: root
                 })
-            } else {
-                // chec if root field exists and create one if not exist
-                if (userDoc.data().root) {
-                    dispatch(setContent(userDoc.data().root))
-                } else {
-                    await updateDoc(userDocRef, {
-                        root: root.content
-                    })
-                }
             }
         } catch (err) {
             console.log('Error generating root!, ', err);
@@ -61,30 +45,36 @@ export const useGenerateRoot = () => {
 // custom hook to generate other fields
 export const useGenerateFields = () => {
     const dispatch = useDispatch();
+
     const generateFields = useCallback(async (user, field) => {
         try {
             const fieldDocRef = doc(db, field.collName, user.uid);
             const fieldDoc = await getDoc(fieldDocRef);
 
             if (fieldDoc.exists()) {
-                const targetFolder = fieldDoc.data()[field.fieldName];
-                const children = targetFolder.children;
+                const targetFolder = fieldDoc.data()[field.fieldID];
 
-                for (const child of children) {
-                    const newData = {
-                        ...child,
-                        properties: {
-                            createdAt: Date.now(),
-                            size: 0,
-                            itemsIn: 0
-                        },
-                        children: []
-                    };
+                if (targetFolder) {
+                    const content = targetFolder.content;
 
-                    // Create a new field in the target folder
-                    await updateDoc(fieldDocRef, {
-                        [child.name]: newData
-                    });
+                    for (const child of content) {
+                        if (!fieldDoc.data()[child.fieldID]) {
+                            const newData = {
+                                ...child,
+                                properties: {
+                                    createdAt: Date.now(),
+                                    size: 0,
+                                    itemsIn: 0
+                                },
+                                content: [],
+                            };
+
+                            // Create a new field in the target folder
+                            await updateDoc(fieldDocRef, {
+                                [child.fieldID]: newData
+                            });
+                        }
+                    }
                 }
             }
         } catch (err) {
@@ -97,7 +87,7 @@ export const useGenerateFields = () => {
     return generateFields;
 }
 
-// custom hook update field children property
+// custom hook update field content property
 export const useUpdateField = () => {
     const dispatch = useDispatch();
     const updateField = useCallback(async (user, field) => {
@@ -106,17 +96,16 @@ export const useUpdateField = () => {
             const fieldDocSnap = await getDoc(fieldDocRef);
 
             if (fieldDocSnap.exists()) {
-                const targetField = fieldDocSnap.data()[field.fieldName];
+                const targetField = fieldDocSnap.data()[field.fieldID];
 
-                if (targetField && Array.isArray(targetField.children)) {
-
+                if (targetField && Array.isArray(targetField.content)) {
                     await updateDoc(fieldDocRef, {
-                        [`${field.fieldName}.children`]: arrayUnion(field.content)
+                        [`${field.fieldID}.content`]: arrayUnion(field.content)
                     })
                 }
             }
         } catch (err) {
-            console.log('Error updating children prop!', (err));
+            console.log('Error updating content prop!', (err));
             dispatch(setError(err))
         }
     }, [dispatch]);
@@ -137,7 +126,7 @@ export const useGetField = () => {
             const fieldDoc = await getDoc(fieldDocRef);
 
             if (fieldDoc.exists()) {
-                const target = fieldDoc.data()[field.fieldName];
+                const target = fieldDoc.data()[field.fieldID];
 
                 if (target.fieldID === field.fieldID) {
                     dispatch(action(target));

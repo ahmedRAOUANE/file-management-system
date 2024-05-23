@@ -53,7 +53,8 @@ h1 {
   line-height: 1.1;
 }
 
-input {
+input,
+textarea {
   padding: calc(var(--main-padding) / 2) calc(var(--main-padding) / 1.5);
   border-radius: 7px;
   outline: none;
