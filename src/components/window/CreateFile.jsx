@@ -128,4 +128,4 @@ const CreateFile = () => {
     )
 }
 
-export default CreateFile
+export default CreateFile;
