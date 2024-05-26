@@ -4,6 +4,7 @@ import { db } from "../../firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { setError } from "../store/errorSlice";
+import { setIsOpen, setwindow } from "../store/windowSlice";
 
 // custom hook to generate root
 export const useGenerateRoot = () => {
@@ -139,4 +140,16 @@ export const useGetField = () => {
     }, [dispatch, path.length])
 
     return getField;
+}
+
+// custome hook to handle window
+export const useHandleWindow = () => {
+    const dispatch = useDispatch();
+
+    const handleWindow = (isOpen, window) => {
+        dispatch(setIsOpen(isOpen))
+        dispatch(setwindow(window))
+    }
+
+    return handleWindow;
 }

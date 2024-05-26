@@ -3,7 +3,7 @@ import { auth } from '../firebase';
 import { Route, Routes } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useDispatch, useSelector } from 'react-redux';
-import { useGenerateFields, useGenerateRoot, useGetField } from './utils/useHandleFields';
+import { useGenerateFields, useGenerateRoot, useGetField } from './utils/handleActions';
 
 // style
 import './style/index.css';
@@ -13,7 +13,6 @@ import './style/button.css';
 // components
 import Loading from './pages/Loading';
 import NotFound from './pages/NotFound';
-import Home from './pages/user/homePage/Home';
 import Window from './components/window/Window';
 import UserLayout from './pages/user/UserLayout';
 import LandingPage from './pages/landing/LandingPage';
@@ -76,9 +75,7 @@ function App() {
       <Routes>
         {user
           ? (
-            <Route path='/' element={<UserLayout />}>
-              <Route index element={<Home />} />
-            </Route>
+            <Route path='/' element={<UserLayout />} />
           )
           : (
             <Route path='/' element={<LandingPage />} />

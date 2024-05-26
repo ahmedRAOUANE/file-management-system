@@ -7,12 +7,14 @@ import { setError } from '../../store/errorSlice';
 import { setContent } from '../../store/contentSlice';
 import { setIsLoading } from '../../store/loaderSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { setIsOpen, setwindow } from '../../store/windowSlice';
+import { useHandleWindow } from '../../utils/handleActions';
 
 const UserNavList = () => {
     const user = useSelector(state => state.userSlice.user)
 
     const dispatch = useDispatch();
+
+    const closeWindow = useHandleWindow()
 
     const handleLogout = async () => {
         try {
@@ -20,12 +22,11 @@ const UserNavList = () => {
             await signOut(auth);
             dispatch(setUser(null));
             dispatch(setContent([]));
-            dispatch(setIsOpen(false));
-            dispatch(setwindow(""));
             dispatch(setPath({
                 name: "root",
                 fieldID: "0"
             }));
+            closeWindow(false, "");
         } catch (err) {
             dispatch(setError(err))
         } finally {

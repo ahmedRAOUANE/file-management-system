@@ -7,6 +7,7 @@ import errorSlice from "./errorSlice";
 import windowSlice from "./windowSlice";
 import contentSlice from "./contentSlice";
 import pathSlice from "./pathSlice";
+import selectedSlice from "./selectedSlice";
 
 const store = configureStore({
     reducer: {
@@ -15,7 +16,8 @@ const store = configureStore({
         errorSlice,
         windowSlice,
         contentSlice,
-        pathSlice
+        pathSlice,
+        selectedSlice,
     },
 })
 

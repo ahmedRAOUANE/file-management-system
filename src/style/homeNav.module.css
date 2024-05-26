@@ -1,0 +1,41 @@
+.header {
+    padding: 10px var(--main-padding);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(60px);
+
+    .navURL {
+        transition: .5s;
+        padding: var(--button-padding);
+        background-color: #121212;
+        color: white;
+        gap: 2px;
+        border-radius: 7px;
+        overflow: hidden;
+        width: 300px;
+
+        .pathContainer {
+            gap: 2px;
+            overflow: scroll;
+
+            span {
+                &:hover {
+                    background-color: transparent;
+                    color: blue;
+                }
+            }
+        }
+
+        input {
+            padding: 0px;
+            font-size: 19px;
+            letter-spacing: 2px;
+            font-weight: 100;
+        }
+    }
+
+    .actions {
+        width: 336px;
+    }
+}

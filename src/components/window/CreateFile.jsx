@@ -1,11 +1,10 @@
-import { useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useGenerateFields, useGetField, useUpdateField } from "../../utils/useHandleFields";
 import { v4 } from "uuid";
-import { setIsOpen, setwindow } from "../../store/windowSlice";
-import { setContent } from "../../store/contentSlice";
-import { getDownloadURL, getStorage, ref, uploadBytes, uploadString } from "firebase/storage";
+import { useRef } from "react";
 import { setError } from "../../store/errorSlice";
+import { setContent } from "../../store/contentSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getDownloadURL, getStorage, ref, uploadBytes, uploadString } from "firebase/storage";
+import { useGenerateFields, useGetField, useHandleWindow, useUpdateField } from "../../utils/handleActions";
 
 const CreateFile = () => {
     const user = useSelector(state => state.userSlice.user);
@@ -19,6 +18,7 @@ const CreateFile = () => {
     const uploadedFileRef = useRef();
 
     const generateField = useGenerateFields();
+    const closeWindow = useHandleWindow();
     const updateField = useUpdateField();
     const getfield = useGetField();
 
@@ -69,7 +69,7 @@ const CreateFile = () => {
                 const downloadURL = await getDownloadURL(snapshot.ref);
 
                 createFileDoc(file, downloadURL);
-                closeWindow();
+                closeWindow(false, "");
             } catch (err) {
                 console.log('Error uploading file: ', err);
                 dispatch(setError(err));
@@ -78,15 +78,27 @@ const CreateFile = () => {
     }
 
     const createFileDoc = async (file, downloadURL) => {
-        const field = {
+        const target = {
             collName: "folders",
             fieldName: path[currentParentIndex].name,
-            fieldID: path[currentParentIndex].fieldID,
+            fieldID: path[currentParentIndex].fieldID
+        }
+
+        const childData = {
+            ...target,
             content: {
                 fieldID: `${user.uid}_${v4()}`,
                 name: file.name,
-                extension: file.name.split('.').pop(),
                 url: downloadURL,
+                type: "file"
+            }
+        }
+
+        const field = {
+            ...target,
+            content: {
+                ...childData,
+                extension: file.name.split('.').pop(),
                 type: "file",
                 properties: {
                     size: file.size,
@@ -97,16 +109,11 @@ const CreateFile = () => {
         }
 
         // update files field
-        await updateField(user, field);
+        await updateField(user, childData);
 
         await generateField(user, field);
 
         await getfield(user, field, setContent);
-    }
-
-    const closeWindow = () => {
-        dispatch(setIsOpen(false));
-        dispatch(setwindow(""));
     }
 
     return (
