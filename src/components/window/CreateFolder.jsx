@@ -1,7 +1,7 @@
 import { v4 } from "uuid";
 import { useRef } from "react"
 import { useDispatch, useSelector } from "react-redux";
-import { useGenerateFields, useGetField, useUpdateField } from "../../utils/useHandleFields";
+import { useGenerateFields, useGetField, useUpdateField } from "../../utils/handleActions";
 import { setIsOpen, setwindow } from "../../store/windowSlice";
 import { setContent } from "../../store/contentSlice";
 

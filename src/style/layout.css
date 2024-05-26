@@ -115,3 +115,12 @@
     height: 100%;
     flex: 1;
 }
+
+/* animation */
+.grow {
+    flex-grow: 1;
+}
+
+.shrink {
+    flex-grow: 0;
+}

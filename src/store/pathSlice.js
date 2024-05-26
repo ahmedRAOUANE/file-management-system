@@ -8,14 +8,18 @@ const pathSlice = createSlice({
                 name: "root",
                 fieldID: "0"
             }
-        ]
+        ],
+        lastVisited: null
     },// array of obj
     reducers: {
         setPath: (state, { payload }) => {
             state.path = payload;
+        },
+        setLastVisited: (state, { payload }) => {
+            state.lastVisited = payload;
         }
     }
 })
 
-export const { setPath } = pathSlice.actions;
+export const { setPath, setLastVisited } = pathSlice.actions;
 export default pathSlice.reducer;

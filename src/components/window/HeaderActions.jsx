@@ -1,20 +1,14 @@
 /* eslint-disable react/prop-types */
-import { useDispatch } from "react-redux";
-import { setIsOpen, setwindow } from "../../store/windowSlice";
+import { useHandleWindow } from "../../utils/handleActions";
 
 const HeaderActions = ({ className }) => {
-    const dispatch = useDispatch();
-
-    const openWindow = (window) => {
-        dispatch(setIsOpen(true));
-        dispatch(setwindow(window));
-    }
+    const openWindow = useHandleWindow();
 
     return (
-        <div className={className}>
-            <button className="full-width" onClick={() => openWindow("createFolder")}>create folder</button>
-            <button className="full-width" onClick={() => openWindow("createFile")}>create file</button>
-        </div>
+        <ul className={className}>
+            <li className="btn full-width" onClick={() => openWindow(true, "createFolder")}>create folder</li>
+            <li className="btn full-width" onClick={() => openWindow(true, "createFile")}>create file</li>
+        </ul>
     )
 }
 

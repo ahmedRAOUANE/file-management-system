@@ -1,18 +1,15 @@
-import { useDispatch } from 'react-redux';
+import { useHandleWindow } from '../utils/handleActions';
+
 import Avatar from './Avatar';
-import { setIsOpen, setwindow } from '../store/windowSlice';
 
 const Header = () => {
-    const dispatch = useDispatch();
-    const openWindow = () => {
-        dispatch(setIsOpen(true))
-        dispatch(setwindow("userNav"))
-    }
+    const openWindow = useHandleWindow();
+
     return (
         <header>
             <div className="box">
                 <h2>FMS</h2>
-                <button className="box icon" onClick={openWindow}>
+                <button className="box icon" onClick={() => openWindow(true, "userNav")}>
                     <Avatar />
                 </button>
             </div>

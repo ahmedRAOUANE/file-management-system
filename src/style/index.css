@@ -66,6 +66,13 @@ textarea {
   background-color: #121212;
 }
 
+input[name="checbox"] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+}
 ul,
 li {
   list-style: none;
@@ -73,4 +80,7 @@ li {
 
 header {
   padding: calc(var(--main-padding) / 2) var(--main-padding);
+}
+::-webkit-scrollbar {
+  display: none;
 }
