@@ -49,7 +49,7 @@ const CreateFolder = () => {
             <h2 className='full-width'>create folder</h2>
 
             <form onSubmit={handleSubmit} className='box column full-width ai-start'>
-                <input ref={folderNameRef} required type="text" name="folder name" id="folderName" placeholder='folder name' />
+                <input autoFocus ref={folderNameRef} required type="text" name="folder name" id="folderName" placeholder='folder name' />
                 <button type='submit' className='primary'>create</button>
             </form>
         </>

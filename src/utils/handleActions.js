@@ -1,10 +1,11 @@
 import { v4 } from "uuid";
 import { useCallback } from "react";
-import { db } from "../../firebase";
-import { useDispatch, useSelector } from "react-redux";
-import { arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { db, storage } from "../../firebase";
 import { setError } from "../store/errorSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { setIsOpen, setwindow } from "../store/windowSlice";
+import { arrayRemove, arrayUnion, deleteField, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
 
 // custom hook to generate root
 export const useGenerateRoot = () => {
@@ -111,7 +112,7 @@ export const useUpdateField = () => {
         }
     }, [dispatch]);
 
-    return updateField
+    return updateField;
 }
 
 // custom hook to get fields or create on if not exist 
@@ -140,6 +141,40 @@ export const useGetField = () => {
     }, [dispatch, path.length])
 
     return getField;
+}
+
+// custom hook to delete field
+export const useHandleDelete = () => {
+    const user = useSelector(state => state.userSlice.user)
+
+    const deleteFromFirestore = async (fileList, parentFieldID) => {
+        const fieldDocRef = doc(db, "folders", user.uid);
+        const fieldDocSnap = await getDoc(fieldDocRef);
+
+        if (fieldDocSnap.exists()) {
+            const parent = fieldDocSnap.data()[parentFieldID];
+
+            for (const file of fileList) {
+
+                // Remove file from parent's content array
+                await updateDoc(fieldDocRef, {
+                    [`${parent.fieldID}.content`]: arrayRemove(file)
+                });
+
+                // Delete the file's document
+                await updateDoc(fieldDocRef, {
+                    [file.fieldID]: deleteField()
+                });
+
+                if (file.type === "file") {
+                    const fileRef = ref(storage, file.url)
+                    deleteObject(fileRef);
+                }
+            }
+        }
+    };
+
+    return deleteFromFirestore;
 }
 
 // custome hook to handle window
