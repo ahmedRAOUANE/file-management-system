@@ -14,11 +14,11 @@ const LandingPage = () => {
   return (
     <div className="box center-x center-y full-height container">
       <div className="box">
-        <div className="box column full-width">
+        <div className="box column">
           <h2>file management system</h2>
         </div>
 
-        <div className="box column full-width">
+        <div className="box column">
           {currentPage === 0
             ? (
               <>

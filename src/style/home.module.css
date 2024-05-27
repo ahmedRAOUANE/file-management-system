@@ -1,0 +1,9 @@
+.container {
+    .folderContainer {
+        main>div:hover {
+            input[type="checkbox"] {
+                display: block;
+            }
+        }
+    }
+}

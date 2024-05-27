@@ -1,0 +1,62 @@
+.overlay {
+    position: fixed;
+    height: 100vh;
+    background-color: transparent;
+    backdrop-filter: blur(2px);
+    left: 0;
+    top: 0;
+    z-index: 100;
+
+    .body {
+        width: 86%;
+        border-radius: 10px;
+
+        @media (min-width: 768px) {
+            width: 60%;
+        }
+    }
+
+    &.userNavContainer {
+        backdrop-filter: blur(0);
+
+        .userNav {
+            position: absolute;
+            right: 20px;
+            width: 280px;
+            top: 15%;
+            color: white;
+
+            @media (min-width: 991px) {
+                top: 10%;
+            }
+        }
+    }
+
+    &.moreOptionsContainer {
+        @media (min-width: 768px) {
+            backdrop-filter: blur(0);
+        }
+
+        .moreOptions {
+            position: absolute;
+            right: 20px;
+            width: 280px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+
+            @media (min-width: 768px) {
+                top: 25%;
+                transform: translateY(0);
+            }
+        }
+    }
+
+    &.createFolderContainer {
+        .createFolder {}
+    }
+
+    &.createFileContainer {
+        .createFile {}
+    }
+}
