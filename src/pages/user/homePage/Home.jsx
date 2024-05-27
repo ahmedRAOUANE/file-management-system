@@ -3,7 +3,7 @@ import Icon from "../../../components/Icon";
 import { useDispatch, useSelector } from "react-redux";
 import { setContent } from "../../../store/contentSlice";
 import { useGetField } from "../../../utils/handleActions";
-import { setSelectedFiles } from "../../../store/selectedSlice";
+import { setIsSelecting, setSelectedFiles } from "../../../store/selectedSlice";
 import { setLastVisited, setPath } from "../../../store/pathSlice";
 
 // style
@@ -15,6 +15,7 @@ const Home = () => {
     const path = useSelector(state => state.pathSlice.path);
     const error = useSelector(state => state.errorSlice.error);
     const selectedFiles = useSelector(state => state.selectedSlice.selectedFiles)
+    const isSelecting = useSelector(state => state.selectedSlice.isSelecting)
 
     const currentFolderIndex = path.length - 1;
 
@@ -58,6 +59,8 @@ const Home = () => {
         if (file.type === "folder") {
             dispatch(setPath([...path, file]));
             dispatch(setLastVisited(file));
+            dispatch(setSelectedFiles([]));
+            dispatch(setIsSelecting(false));
         }
         else if (file.type === "file") {
             window.open(file.url, "_blank");
@@ -70,7 +73,20 @@ const Home = () => {
     // }
 
     const selectFile = (file) => {
-        dispatch(setSelectedFiles([...selectedFiles, file]))
+        const isSelected = selectedFiles.some(selected => selected.fieldID === file.fieldID);
+
+        const updatedSelectedFiles = isSelected
+            ? selectedFiles.filter(selected => selected.fieldID !== file.fieldID)
+            : [...selectedFiles, file];
+
+        dispatch(setSelectedFiles(updatedSelectedFiles));
+        dispatch(setIsSelecting(true));
+
+        if (updatedSelectedFiles.length > 0) {
+            dispatch(setIsSelecting(true));
+        } else {
+            dispatch(setIsSelecting(false));
+        }
     }
 
     return (
@@ -83,15 +99,19 @@ const Home = () => {
                 )
                 : (
                     <div className={`${style.folderContainer} box full-width ai-start`}>
-                        {/* <div className="navbar hide-in-small" style={{ width: "20%" }}>
-                    <ul className="box column full-width">
-                        {sidebarListRef.current.map((ele, idx) => (
-                            <li onClick={() => openFolderFromSidebar(ele)} className="btn full-width" key={idx}>
-                                {ele.name}
-                            </li>
-                        ))}
-                    </ul>
-                </div> */}
+
+                        {/*
+                            <div className="navbar hide-in-small" style={{ width: "20%" }}>
+                                <ul className="box column full-width">
+                                    {sidebarListRef.current.map((ele, idx) => (
+                                        <li onClick={() => openFolderFromSidebar(ele)} className="btn full-width" key={idx}>
+                                            {ele.name}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                         */}
+
                         <main className="box jc-start full-width">
                             {folders.length > 0 ? folders.map((file, idx) => (
                                 <div onClick={() => openFolder(file)} key={idx} style={{ width: "80px", height: "130px", position: "relative" }} className="icon btn column box">
@@ -99,7 +119,13 @@ const Home = () => {
                                     <span style={{ width: "100%", overflow: "hidden", flex: "1", padding: "0 10px" }}>
                                         {file.name}
                                     </span>
-                                    <input onChange={() => selectFile(file)} onClick={(e) => e.stopPropagation()} className={`btn icon ${selectedFiles.length > 0 ? "" : "hidden"}`} type="checkbox" name="checbox" />
+                                    <input
+                                        checked={selectedFiles.some(selected => selected.fieldID === file.fieldID)}
+                                        onChange={() => selectFile(file)}
+                                        onClick={(e) => e.stopPropagation()}
+                                        className={`btn icon ${isSelecting ? "" : "hidden"}`}
+                                        type="checkbox" name="checbox"
+                                    />
                                 </div>
                             )) : (
                                 <p>this folder is empty</p>

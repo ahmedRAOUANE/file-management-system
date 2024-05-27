@@ -121,7 +121,7 @@ const CreateFile = () => {
             <h2 className='full-width'>create file</h2>
 
             <form onSubmit={createFile} className='box column full-width ai-start'>
-                <input ref={createdFileRef} required type="text" name="folder name" id="folderName" placeholder='folder name' />
+                <input autoFocus ref={createdFileRef} required type="text" name="folder name" id="folderName" placeholder='folder name' />
                 <textarea ref={createdFielContentRef} name="content" id="content" placeholder="content here" className="full-width"></textarea>
                 <div className="box full-width">
                     <button type='button' className='secodary box'>
