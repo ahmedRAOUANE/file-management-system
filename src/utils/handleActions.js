@@ -177,6 +177,52 @@ export const useHandleDelete = () => {
     return deleteFromFirestore;
 }
 
+// custom hook to change name property
+export const useChangeName = () => {
+    const user = useSelector(state => state.userSlice.user);
+    const dispatch = useDispatch();
+
+    const changeName = async (field, parentFieldID, newName) => {
+        if (!field) {
+            console.log('invalid vield: ', field);
+            return;
+        }
+
+        try {
+            const fieldDocRef = doc(db, "folders", user.uid);
+            const fieldDocSnap = await getDoc(fieldDocRef);
+
+            if (fieldDocSnap.exists()) {
+                const parent = fieldDocSnap.data()[parentFieldID];
+
+                const updatedContent = parent.content.map((item) =>
+                    item.fieldID === field.fieldID ? { ...item, name: newName } : item
+                );
+
+                await updateDoc(fieldDocRef, {
+                    [`${parentFieldID}.content`]: updatedContent,
+                    [`${field.fieldID}.name`]: newName,
+                });
+
+                // change name in parent
+                // await updateDoc(fieldDocRef, {
+                //     [`${parentFieldID.content[field.fieldID]}.name`]: newName
+                // })
+
+                // change name in the file/folder
+                // await updateDoc(fieldDocRef, {
+                //     [`${field.fieldID}.name`]: newName
+                // })
+            }
+        } catch (err) {
+            console.log('Error updating file name: ', err);
+            dispatch(setError(err));
+        }
+    }
+
+    return changeName;
+} 
+
 // custome hook to handle window
 export const useHandleWindow = () => {
     const dispatch = useDispatch();
