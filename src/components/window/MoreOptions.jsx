@@ -1,13 +1,15 @@
 /* eslint-disable react/prop-types */
 import HeaderActions from "./HeaderActions";
+import { setContent } from "../../store/contentSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsSelecting } from "../../store/selectedSlice";
-import { useGetField, useHandleDelete } from "../../utils/handleActions";
 import { useHandleWindow } from "../../utils/handleActions";
-import { setContent } from "../../store/contentSlice";
+import { useGetField, useHandleDelete } from "../../utils/handleActions";
 
 const OneSelectedFileList = () => {
     const selectedFiles = useSelector(state => state.selectedSlice.selectedFiles);
+
+    const openWindow = useHandleWindow()
 
     return (
         <>
@@ -19,7 +21,7 @@ const OneSelectedFileList = () => {
                     Edite
                 </li>
             )}
-            <li className="link btn full-width">
+            <li onClick={() => openWindow(true, "rename")} className="link btn full-width">
                 rename
             </li>
             <Delete fileList={selectedFiles} />
