@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsOpen, setwindow } from "../store/windowSlice";
 import { arrayRemove, arrayUnion, deleteField, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
+import { setLastVisited, setPath } from "../store/pathSlice";
+import { setIsSelecting, setSelectedFiles } from "../store/selectedSlice";
 
 // custom hook to generate root
 export const useGenerateRoot = () => {
@@ -115,6 +117,30 @@ export const useUpdateField = () => {
     return updateField;
 }
 
+// custom hook to open file/folder
+export const useOpenFileOrFolder = () => {
+    const path = useSelector(state => state.pathSlice.path);
+
+    const dispatch = useDispatch();
+
+    const closeWindow = useHandleWindow();
+
+    const openFileOrFolder = async (file) => {
+        if (file.type === "folder") {
+            dispatch(setPath([...path, file]));
+            dispatch(setLastVisited(file));
+            dispatch(setSelectedFiles([]));
+            dispatch(setIsSelecting(false));
+            closeWindow(false, "");
+        }
+        else if (file.type === "file") {
+            window.open(file.url, "_blank");
+        }
+    }
+
+    return openFileOrFolder
+}
+
 // custom hook to get fields or create on if not exist 
 export const useGetField = () => {
     const path = useSelector(state => state.pathSlice.path);
@@ -145,7 +171,9 @@ export const useGetField = () => {
 
 // custom hook to delete field
 export const useHandleDelete = () => {
-    const user = useSelector(state => state.userSlice.user)
+    const user = useSelector(state => state.userSlice.user);
+
+    // const getField = useGetField();
 
     const deleteFromFirestore = async (fileList, parentFieldID) => {
         const fieldDocRef = doc(db, "folders", user.uid);
@@ -171,11 +199,59 @@ export const useHandleDelete = () => {
                     deleteObject(fileRef);
                 }
             }
+
+            // await getField(user, )
         }
     };
 
     return deleteFromFirestore;
 }
+
+// custom hook to change name property
+export const useChangeName = () => {
+    const user = useSelector(state => state.userSlice.user);
+    const dispatch = useDispatch();
+
+    const changeName = async (field, parentFieldID, newName) => {
+        if (!field) {
+            console.log('invalid vield: ', field);
+            return;
+        }
+
+        try {
+            const fieldDocRef = doc(db, "folders", user.uid);
+            const fieldDocSnap = await getDoc(fieldDocRef);
+
+            if (fieldDocSnap.exists()) {
+                const parent = fieldDocSnap.data()[parentFieldID];
+
+                const updatedContent = parent.content.map((item) =>
+                    item.fieldID === field.fieldID ? { ...item, name: newName } : item
+                );
+
+                await updateDoc(fieldDocRef, {
+                    [`${parentFieldID}.content`]: updatedContent,
+                    [`${field.fieldID}.name`]: newName,
+                });
+
+                // change name in parent
+                // await updateDoc(fieldDocRef, {
+                //     [`${parentFieldID.content[field.fieldID]}.name`]: newName
+                // })
+
+                // change name in the file/folder
+                // await updateDoc(fieldDocRef, {
+                //     [`${field.fieldID}.name`]: newName
+                // })
+            }
+        } catch (err) {
+            console.log('Error updating file name: ', err);
+            dispatch(setError(err));
+        }
+    }
+
+    return changeName;
+} 
 
 // custome hook to handle window
 export const useHandleWindow = () => {

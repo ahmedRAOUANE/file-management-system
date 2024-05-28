@@ -4,6 +4,7 @@ import { useHandleWindow } from "../../utils/handleActions";
 import style from "../../style/window.module.css";
 
 // components
+import Rename from "./Rename";
 import Properties from "./Properties";
 import CreateFile from "./CreateFile";
 import UserNavList from "./UserNavList";
@@ -27,6 +28,8 @@ const WindowContent = () => {
             return <MoreOptions />
         case "properties":
             return <Properties />
+        case "rename":
+            return <Rename />
         default:
             return null
     }

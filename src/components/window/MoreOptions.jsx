@@ -1,17 +1,21 @@
 /* eslint-disable react/prop-types */
 import HeaderActions from "./HeaderActions";
+import { setContent } from "../../store/contentSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsSelecting } from "../../store/selectedSlice";
+import { useHandleWindow, useOpenFileOrFolder } from "../../utils/handleActions";
 import { useGetField, useHandleDelete } from "../../utils/handleActions";
-import { useHandleWindow } from "../../utils/handleActions";
-import { setContent } from "../../store/contentSlice";
 
 const OneSelectedFileList = () => {
     const selectedFiles = useSelector(state => state.selectedSlice.selectedFiles);
 
+    const openWindow = useHandleWindow();
+    const openFolder = useOpenFileOrFolder();
+    const openPropertiesWindow = useHandleWindow();
+
     return (
         <>
-            <li className="link btn full-width">
+            <li className="link btn full-width" onClick={() => openFolder(selectedFiles[0])}>
                 open
             </li>
             {selectedFiles[0].type === "file" && (
@@ -19,10 +23,13 @@ const OneSelectedFileList = () => {
                     Edite
                 </li>
             )}
-            <li className="link btn full-width">
+            <li onClick={() => openWindow(true, "rename")} className="link btn full-width">
                 rename
             </li>
             <Delete fileList={selectedFiles} />
+            <li className='btn full-width' onClick={() => openPropertiesWindow(true, "properties")}>
+                properties
+            </li>
         </>
     )
 }
@@ -84,17 +91,12 @@ const MoreOptions = () => {
     const selectedFiles = useSelector(state => state.selectedSlice.selectedFiles);
     const isSelecting = useSelector(state => state.selectedSlice.isSelecting);
 
-    const openPropertiesWindow = useHandleWindow();
-
     return (
         <ul className="box column full-width">
             <HeaderActions className={`box column full-width text-start hide-in-large`} />
             {selectedFiles.length === 0 && isSelecting === false ? <Select /> : null}
             {selectedFiles.length === 1 && <OneSelectedFileList />}
             {selectedFiles.length > 1 && <Delete fileList={selectedFiles} />}
-            <li className='btn full-width' onClick={() => openPropertiesWindow(true, "properties")}>
-                properties
-            </li>
         </ul>
     )
 }

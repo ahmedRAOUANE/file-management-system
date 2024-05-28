@@ -2,9 +2,8 @@ import { useEffect, useMemo } from "react";
 import Icon from "../../../components/Icon";
 import { useDispatch, useSelector } from "react-redux";
 import { setContent } from "../../../store/contentSlice";
-import { useGetField } from "../../../utils/handleActions";
+import { useGetField, useOpenFileOrFolder } from "../../../utils/handleActions";
 import { setIsSelecting, setSelectedFiles } from "../../../store/selectedSlice";
-import { setLastVisited, setPath } from "../../../store/pathSlice";
 
 // style
 import style from "../../../style/home.module.css";
@@ -22,6 +21,7 @@ const Home = () => {
     const dispatch = useDispatch();
 
     const getfield = useGetField();
+    const openFolder = useOpenFileOrFolder();
 
     const folders = content.content ? content.content : [];
 
@@ -54,18 +54,6 @@ const Home = () => {
             fetchData();
         }
     }, [user, getfield, field])
-
-    const openFolder = (file) => {
-        if (file.type === "folder") {
-            dispatch(setPath([...path, file]));
-            dispatch(setLastVisited(file));
-            dispatch(setSelectedFiles([]));
-            dispatch(setIsSelecting(false));
-        }
-        else if (file.type === "file") {
-            window.open(file.url, "_blank");
-        }
-    }
 
     // ---- for the sidebar feature --- //
     // const openFolderFromSidebar = (file) => {
