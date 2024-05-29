@@ -37,22 +37,6 @@ const HomeNavBar = () => {
         return null;
     }, [path, currentFolderIndex]);
 
-    const changePlaceholder = (e) => {
-        const parent = e.target.parentNode;
-        e.target.placeholder = "type path or file name";
-        parent.classList.remove("shrink");
-        parent.classList.add("grow");
-        parent.classList.remove("no-shadow");
-    }
-
-    const restorePlaceholder = (e) => {
-        const parent = e.target.parentNode;
-        e.target.placeholder = "";
-        parent.classList.add("shrink");
-        parent.classList.remove("grow");
-        parent.classList.add("no-shadow");
-    }
-
     // listen to the path array changes
     useEffect(() => {
         if (field && user) {
@@ -90,6 +74,23 @@ const HomeNavBar = () => {
         }
     }
 
+    // ----- for search feature ----- //
+    // const changePlaceholder = (e) => {
+    //     const parent = e.target.parentNode;
+    //     e.target.placeholder = "type path or file name";
+    //     parent.classList.remove("shrink");
+    //     parent.classList.add("grow");
+    //     parent.classList.remove("no-shadow");
+    // }
+
+    // const restorePlaceholder = (e) => {
+    //     const parent = e.target.parentNode;
+    //     e.target.placeholder = "";
+    //     parent.classList.add("shrink");
+    //     parent.classList.remove("grow");
+    //     parent.classList.add("no-shadow");
+    // }
+
     return (
         <div className={`${style.header} box full-width nowrap`}>
             <div className="box hide-in-small nowrap">
@@ -103,7 +104,9 @@ const HomeNavBar = () => {
                         <span onClick={() => handleNavigate(idx)} className="btn icon" key={idx}>{path.name}/</span>
                     ))}
                 </div>
-                <input type="text" onFocus={changePlaceholder} onBlur={restorePlaceholder} />
+                {/* 
+                ----- for search feature -----
+                <input type="text" onFocus={changePlaceholder} onBlur={restorePlaceholder} /> */}
             </div>
 
             <div className="box nowrap">
