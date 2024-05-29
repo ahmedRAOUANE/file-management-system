@@ -28,6 +28,11 @@
     border-radius: 7px;
 }
 
+@media (prefers-color-theme: dark) {
+    * {
+        color: white;
+    }
+}
 /* direction */
 .column {
     flex-direction: column;
