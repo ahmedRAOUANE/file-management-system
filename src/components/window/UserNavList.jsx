@@ -22,10 +22,10 @@ const UserNavList = () => {
             await signOut(auth);
             dispatch(setUser(null));
             dispatch(setContent([]));
-            dispatch(setPath({
+            dispatch(setPath([{
                 name: "root",
                 fieldID: "0"
-            }));
+            }]));
             closeWindow(false, "");
         } catch (err) {
             dispatch(setError(err))

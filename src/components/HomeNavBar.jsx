@@ -99,7 +99,7 @@ const HomeNavBar = () => {
 
             <div className={`${style.navURL} box jc-start paper no-shadow nowrap`}>
                 <div className={`box ${style.pathContainer}`}>
-                    {path && path.map((path, idx) => (
+                    {path.length > 0 && path.map((path, idx) => (
                         <span onClick={() => handleNavigate(idx)} className="btn icon" key={idx}>{path.name}/</span>
                     ))}
                 </div>

@@ -19,7 +19,6 @@ const Login = () => {
             password: passwordRef.current.value,
         }
 
-        console.log("login credencials: ", credentials);
         try {
             dispatch(setIsLoading(true));
             await signInWithEmailAndPassword(auth, credentials.email, credentials.password)
