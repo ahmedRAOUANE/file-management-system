@@ -1,11 +1,13 @@
 import { useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setError } from "../../../store/errorSlice";
 import { setIsLoading } from "../../../store/loaderSlice";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../../firebase";
 
 const Login = () => {
+    const error = useSelector(state => state.errorSlice.error);
+
     const emailRef = useRef();
     const passwordRef = useRef();
 
@@ -22,6 +24,11 @@ const Login = () => {
         try {
             dispatch(setIsLoading(true));
             await signInWithEmailAndPassword(auth, credentials.email, credentials.password)
+                .then(
+                    () => {
+                        dispatch(setError(null));
+                    }
+                )
         } catch (err) {
             dispatch(setError(err))
         } finally {
@@ -29,11 +36,22 @@ const Login = () => {
         }
     }
 
+    const hideErrorMessage = () => {
+        dispatch(setError(null))
+    }
+
     return (
         <>
             <h2>Login</h2>
 
-            <form className="box column " onSubmit={handleLogin}>
+            {error && (
+                <div className="error paper box outline danger">
+                    <p>email or password is incorrect, try again..</p>
+                    <span onClick={hideErrorMessage} className="hideBtn btn icon outline box center-x center-y">X</span>
+                </div>
+            )}
+
+            <form className="box column full-width" onSubmit={handleLogin}>
                 <input ref={emailRef} type="email" required placeholder="email" />
                 <input ref={passwordRef} type="password" required placeholder="password" />
                 <input type="submit" required value={"Login"} className="full-width" />
