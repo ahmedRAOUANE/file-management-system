@@ -5,6 +5,7 @@ import style from "../../style/window.module.css";
 
 // components
 import Rename from "./Rename";
+import EditFile from "./EditFile";
 import Properties from "./Properties";
 import CreateFile from "./CreateFile";
 import UserNavList from "./UserNavList";
@@ -30,6 +31,8 @@ const WindowContent = () => {
             return <Properties />
         case "rename":
             return <Rename />
+        case "editFile":
+            return <EditFile />
         default:
             return null
     }

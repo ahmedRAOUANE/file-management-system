@@ -18,14 +18,13 @@ const OneSelectedFileList = () => {
             <li className="link btn full-width" onClick={() => openFolder(selectedFiles[0])}>
                 open
             </li>
-            {/*
-            ----- Edit file featuer -----
+
             {selectedFiles[0].type === "file" && (
-                <li className="link btn full-width">
+                <li onClick={() => openWindow(true, "editFile")} className="link btn full-width">
                     Edite
                 </li>
             )} 
-            */}
+
             <li onClick={() => openWindow(true, "rename")} className="link btn full-width">
                 rename
             </li>

@@ -62,7 +62,7 @@ const CreateFile = () => {
         const files = uploadedFileRef.current.files;
         for (const file of files) {
             const storage = getStorage();
-            const storageRef = ref(storage, `files/${user.uid}/${v4()}_${file.name}`);
+            const storageRef = ref(storage, `files/${user.uid}/${user.uid}_${v4()}_${file.name}`);
 
             try {
                 const snapshot = await uploadBytes(storageRef, file);
