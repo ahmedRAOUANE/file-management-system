@@ -4,10 +4,11 @@ import { db, storage } from "../../firebase";
 import { setError } from "../store/errorSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsOpen, setwindow } from "../store/windowSlice";
-import { arrayRemove, arrayUnion, deleteField, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { deleteObject, ref } from "firebase/storage";
 import { setLastVisited, setPath } from "../store/pathSlice";
+import { deleteObject, ref, uploadBytes } from "firebase/storage";
 import { setIsSelecting, setSelectedFiles } from "../store/selectedSlice";
+import { arrayRemove, arrayUnion, deleteField, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { setContent } from "../store/contentSlice";
 
 // custom hook to generate root
 export const useGenerateRoot = () => {
@@ -173,8 +174,6 @@ export const useGetField = () => {
 export const useHandleDelete = () => {
     const user = useSelector(state => state.userSlice.user);
 
-    // const getField = useGetField();
-
     const deleteFromFirestore = async (fileList, parentFieldID) => {
         const fieldDocRef = doc(db, "folders", user.uid);
         const fieldDocSnap = await getDoc(fieldDocRef);
@@ -199,12 +198,59 @@ export const useHandleDelete = () => {
                     deleteObject(fileRef);
                 }
             }
-
-            // await getField(user, )
         }
     };
 
     return deleteFromFirestore;
+}
+
+// custom hook to update file content 
+export const useUpdateFileContent = () => {
+    const user = useSelector(state => state.userSlice.user);
+    const path = useSelector(state => state.pathSlice.path);
+
+    const dispatch = useDispatch();
+
+    const getField = useGetField();
+    const closeWindow = useHandleWindow();
+
+    const currentParentIndex = path.length - 1;
+
+    const getFileContent = async (file) => {
+
+        try {
+            const response = await fetch(file.url);
+            return await response.text();
+        } catch (err) {
+            console.log('Error getting file content! ', err);
+            dispatch(setError(err));
+        }
+    }
+
+    const updateFileContent = async (file, newContent) => {
+        const field = {
+            collName: "folders",
+            fieldName: path[currentParentIndex].name,
+            fieldID: path[currentParentIndex].fieldID
+        }
+
+        try {
+            const fileRef = ref(storage, file.url);
+            const fileBlob = new Blob([newContent], { type: file.type });
+
+            await uploadBytes(fileRef, fileBlob);
+
+            await getField(user, field, setContent);
+
+            closeWindow(false, "");
+            // console.log('file blob: ', fileBlob);
+        } catch (err) {
+            console.log('Error updating file content: ', err);
+            dispatch(setError(err));
+        }
+    }
+
+    return { getFileContent, updateFileContent }
 }
 
 // custom hook to change name property
