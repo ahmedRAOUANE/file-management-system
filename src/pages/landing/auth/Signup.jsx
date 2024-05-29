@@ -21,7 +21,6 @@ const Signup = () => {
       password: passwordRef.current.value,
     }
 
-    console.log("signup credencials: ", credentials);
     try {
       dispatch(setIsLoading(true))
       await createUserWithEmailAndPassword(auth, credentials.email, credentials.password)

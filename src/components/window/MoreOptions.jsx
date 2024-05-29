@@ -18,11 +18,14 @@ const OneSelectedFileList = () => {
             <li className="link btn full-width" onClick={() => openFolder(selectedFiles[0])}>
                 open
             </li>
+            {/*
+            ----- Edit file featuer -----
             {selectedFiles[0].type === "file" && (
                 <li className="link btn full-width">
                     Edite
                 </li>
-            )}
+            )} 
+            */}
             <li onClick={() => openWindow(true, "rename")} className="link btn full-width">
                 rename
             </li>
@@ -33,16 +36,6 @@ const OneSelectedFileList = () => {
         </>
     )
 }
-
-// const MoreTHanOneSelectedFileList = () => {
-//     const selectedFiles = useSelector(state => state.selectedSlice.selectedFiles);
-
-//     return (
-//         <>
-//             <Delete  />
-//         </>
-//     )
-// }
 
 const Select = () => {
     const dispatch = useDispatch();

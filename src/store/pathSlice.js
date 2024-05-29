@@ -10,7 +10,7 @@ const pathSlice = createSlice({
             }
         ],
         lastVisited: null
-    },// array of obj
+    },
     reducers: {
         setPath: (state, { payload }) => {
             state.path = payload;
