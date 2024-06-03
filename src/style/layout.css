@@ -28,6 +28,10 @@
     border-radius: 7px;
 }
 
+.scroller {
+    overflow: scroll;
+    height: 300px;
+}
 /* direction */
 .column {
     flex-direction: column;

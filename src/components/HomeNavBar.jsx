@@ -22,7 +22,6 @@ const HomeNavBar = () => {
     const dispatch = useDispatch();
 
     const getfield = useGetField();
-
     const openWindow = useHandleWindow();
 
     const field = useMemo(() => {
@@ -55,9 +54,6 @@ const HomeNavBar = () => {
     const handleNavigate = (fileIndex) => {
         if (path.length === 0) return;
         dispatch(setPath(path.slice(0, fileIndex + 1)));
-
-        // second case
-        // search folders && update path
     }
 
     const backward = async () => {
@@ -91,6 +87,18 @@ const HomeNavBar = () => {
     //     parent.classList.add("no-shadow");
     // }
 
+    // const handleSearchChange = (e) => {
+    //     setSearchQuery(e.target.value);
+    // };
+
+    // const filteredContent = content.filter(item =>
+    //     item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    // );
+
+    // const openSearchWindow = () => {
+    //   openWindow(true, "search");
+    // }
+
     return (
         <div className={`${style.header} box full-width nowrap`}>
             <div className="box hide-in-small nowrap">
@@ -104,9 +112,8 @@ const HomeNavBar = () => {
                         <span onClick={() => handleNavigate(idx)} className="btn icon" key={idx}>{path.name}/</span>
                     ))}
                 </div>
-                {/* 
-                ----- for search feature -----
-                <input type="text" onFocus={changePlaceholder} onBlur={restorePlaceholder} /> */}
+                {/* ----- for search feature ----- */}
+                <input type="text" onFocus={() => openWindow(true, "search")} placeholder="type path or file name" />
             </div>
 
             <div className="box nowrap">
