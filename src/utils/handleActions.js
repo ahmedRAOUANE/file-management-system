@@ -2,13 +2,14 @@ import { v4 } from "uuid";
 import { useCallback } from "react";
 import { db, storage } from "../../firebase";
 import { setError } from "../store/errorSlice";
+import { setContent } from "../store/contentSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { setSearchResults } from "../store/searchSlice";
 import { setIsOpen, setwindow } from "../store/windowSlice";
 import { setLastVisited, setPath } from "../store/pathSlice";
 import { deleteObject, ref, uploadBytes } from "firebase/storage";
 import { setIsSelecting, setSelectedFiles } from "../store/selectedSlice";
 import { arrayRemove, arrayUnion, deleteField, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { setContent } from "../store/contentSlice";
 
 // custom hook to generate root
 export const useGenerateRoot = () => {
@@ -40,7 +41,7 @@ export const useGenerateRoot = () => {
             }
         } catch (err) {
             console.log('Error generating root!, ', err);
-            dispatch(setError(err))
+            dispatch(setError(err.message));
         }
     }, [dispatch]);
 
@@ -84,7 +85,7 @@ export const useGenerateFields = () => {
             }
         } catch (err) {
             console.log('Error generating fields: ', err);
-            dispatch(setError(err));
+            dispatch(setError(err.message));
         }
 
     }, [dispatch])
@@ -111,7 +112,7 @@ export const useUpdateField = () => {
             }
         } catch (err) {
             console.log('Error updating content prop!', (err));
-            dispatch(setError(err))
+            dispatch(setError(err.message))
         }
     }, [dispatch]);
 
@@ -163,7 +164,7 @@ export const useGetField = () => {
             }
         } catch (err) {
             console.log('Error getting field: ', err);
-            dispatch(setError(err));
+            dispatch(setError(err.message));
         }
     }, [dispatch, path.length])
 
@@ -279,25 +280,48 @@ export const useChangeName = () => {
                     [`${parentFieldID}.content`]: updatedContent,
                     [`${field.fieldID}.name`]: newName,
                 });
-
-                // change name in parent
-                // await updateDoc(fieldDocRef, {
-                //     [`${parentFieldID.content[field.fieldID]}.name`]: newName
-                // })
-
-                // change name in the file/folder
-                // await updateDoc(fieldDocRef, {
-                //     [`${field.fieldID}.name`]: newName
-                // })
             }
         } catch (err) {
             console.log('Error updating file name: ', err);
-            dispatch(setError(err));
+            dispatch(setError(err.message));
         }
     }
 
     return changeName;
 } 
+
+// custom hook to search files/folders
+export const useHandleSearch = () => {
+    const user = useSelector(state => state.userSlice.user);
+
+    const dispatch = useDispatch();
+
+    const searchFealds = useCallback(async (searchQuery) => {
+        if (!searchQuery) {
+            dispatch(setSearchResults([]));
+            return;
+        }
+
+        try {
+            const userDocRef = doc(db, "folders", user.uid);
+            const userDocSnap = await getDoc(userDocRef);
+
+            if (userDocSnap.exists()) {
+                const allDocs = userDocSnap.data();
+                const allFiles = allDocs ? Object.values(allDocs) : [];
+                const filteredFiles = allFiles.filter(res => res.name.toLowerCase().includes(searchQuery.toLowerCase()))
+
+                dispatch(setSearchResults(filteredFiles));
+            }
+
+        } catch (err) {
+            console.log('error searching folders: ', err);
+            dispatch(setError(err.message));
+        }
+    }, [dispatch, user.uid]);
+
+    return searchFealds;
+}
 
 // custome hook to handle window
 export const useHandleWindow = () => {
