@@ -70,35 +70,6 @@ const HomeNavBar = () => {
         }
     }
 
-    // ----- for search feature ----- //
-    // const changePlaceholder = (e) => {
-    //     const parent = e.target.parentNode;
-    //     e.target.placeholder = "type path or file name";
-    //     parent.classList.remove("shrink");
-    //     parent.classList.add("grow");
-    //     parent.classList.remove("no-shadow");
-    // }
-
-    // const restorePlaceholder = (e) => {
-    //     const parent = e.target.parentNode;
-    //     e.target.placeholder = "";
-    //     parent.classList.add("shrink");
-    //     parent.classList.remove("grow");
-    //     parent.classList.add("no-shadow");
-    // }
-
-    // const handleSearchChange = (e) => {
-    //     setSearchQuery(e.target.value);
-    // };
-
-    // const filteredContent = content.filter(item =>
-    //     item.name.toLowerCase().includes(searchQuery.toLowerCase())
-    // );
-
-    // const openSearchWindow = () => {
-    //   openWindow(true, "search");
-    // }
-
     return (
         <div className={`${style.header} box full-width nowrap`}>
             <div className="box hide-in-small nowrap">
@@ -112,8 +83,7 @@ const HomeNavBar = () => {
                         <span onClick={() => handleNavigate(idx)} className="btn icon" key={idx}>{path.name}/</span>
                     ))}
                 </div>
-                {/* ----- for search feature ----- */}
-                <input type="text" onFocus={() => openWindow(true, "search")} placeholder="type path or file name" />
+                <input type="text" onFocus={() => openWindow(true, "search")} placeholder="type file name" />
             </div>
 
             <div className="box nowrap">
